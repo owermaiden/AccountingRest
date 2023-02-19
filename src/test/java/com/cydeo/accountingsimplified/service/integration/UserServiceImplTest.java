@@ -82,7 +82,7 @@ class UserServiceImplTest {
 
 
     @Test
-    @WithAnonymousUser
+//    @WithAnonymousUser
     @DisplayName("When create new User then success")
     public void GIVEN_USER_DTO_WHEN_SAVE_THEN_SUCCESS(){
         // Given
