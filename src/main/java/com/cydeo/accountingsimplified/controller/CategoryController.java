@@ -1,7 +1,9 @@
 package com.cydeo.accountingsimplified.controller;
 
+import com.cydeo.accountingsimplified.annotation.DefaultExceptionMessage;
 import com.cydeo.accountingsimplified.dto.CategoryDto;
 import com.cydeo.accountingsimplified.dto.ResponseWrapper;
+import com.cydeo.accountingsimplified.exception.AccountingException;
 import com.cydeo.accountingsimplified.service.CategoryService;
 import com.stripe.exception.ApiException;
 import org.springframework.http.HttpStatus;
@@ -32,7 +34,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper> getCategoryById(@PathVariable("id") Long id){
+    public ResponseEntity<ResponseWrapper> getCategoryById(@PathVariable("id") Long id) throws AccountingException {
         CategoryDto category = categoryService.findCategoryById(id);
         return ResponseEntity.ok(new ResponseWrapper("Category successfully retrieved",category, HttpStatus.OK));
     }
@@ -49,6 +51,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
     public ResponseEntity<ResponseWrapper> update(@RequestBody CategoryDto categoryDto, @PathVariable("id") Long id) throws Exception {
         categoryDto.setId(id);
         boolean categoryDescriptionExist = categoryService.isCategoryDescriptionExist(categoryDto);
@@ -60,7 +63,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<ResponseWrapper> delete(@PathVariable("id") Long id) throws AccountingException {
         categoryService.delete(id);
         return ResponseEntity.ok(new ResponseWrapper("Category successfully deleted",HttpStatus.OK));
     }

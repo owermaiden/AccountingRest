@@ -4,6 +4,7 @@ import com.cydeo.accountingsimplified.dto.ClientVendorDto;
 import com.cydeo.accountingsimplified.dto.ResponseWrapper;
 import com.cydeo.accountingsimplified.entity.ClientVendor;
 import com.cydeo.accountingsimplified.enums.ClientVendorType;
+import com.cydeo.accountingsimplified.exception.AccountingException;
 import com.cydeo.accountingsimplified.service.AddressService;
 import com.cydeo.accountingsimplified.service.ClientVendorService;
 import com.cydeo.accountingsimplified.service.InvoiceService;
@@ -38,7 +39,7 @@ public class ClientVendorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper> getClientVendorById(@PathVariable("id") Long id) {
+    public ResponseEntity<ResponseWrapper> getClientVendorById(@PathVariable("id") Long id) throws AccountingException {
         ClientVendorDto clientVendor = clientVendorService.findClientVendorById(id);
         return ResponseEntity.ok(new ResponseWrapper("Client/vendors are successfully retrieved",clientVendor, HttpStatus.OK));
     }
@@ -47,27 +48,27 @@ public class ClientVendorController {
     public ResponseEntity<ResponseWrapper> createClientVendor(@RequestBody ClientVendorDto clientVendorDto) throws Exception {
         boolean isDuplicatedCompanyName = clientVendorService.companyNameExists(clientVendorDto);
         if (isDuplicatedCompanyName) {
-            throw new Exception("Client/vendor with this name already exists");
+            throw new AccountingException("Client/vendor with this name already exists");
         }
         ClientVendorDto clientVendor = clientVendorService.create(clientVendorDto);
         return ResponseEntity.ok(new ResponseWrapper("Client/vendor is successfully created",clientVendor, HttpStatus.CREATED));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper> updateClientVendor(@PathVariable("id") Long id, @RequestBody ClientVendorDto clientVendorDto) throws Exception {
+    public ResponseEntity<ResponseWrapper> updateClientVendor(@PathVariable("id") Long id, @RequestBody ClientVendorDto clientVendorDto) throws AccountingException, ClassNotFoundException, CloneNotSupportedException {
         clientVendorDto.setId(id);
         boolean isDuplicatedCompanyName = clientVendorService.companyNameExists(clientVendorDto);
         if (isDuplicatedCompanyName) {
-            throw new Exception("Client/vendor with this name already exists");
+            throw new AccountingException("Client/vendor with this name already exists");
         }
         ClientVendorDto clientVendor = clientVendorService.update(id, clientVendorDto);
         return ResponseEntity.ok(new ResponseWrapper("Client/vendor is successfully updated",clientVendor, HttpStatus.OK));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper> delete(@PathVariable("id") Long id) throws Exception {
+    public ResponseEntity<ResponseWrapper> delete(@PathVariable("id") Long id) throws AccountingException {
         if (invoiceService.checkIfInvoiceExist(id)){
-            throw new Exception("You have Invoices with this Client/Vendor");
+            throw new AccountingException("Client/Vendor can not be deleted...");
         }
         clientVendorService.delete(id);
         return ResponseEntity.ok(new ResponseWrapper("Client/vendor is successfully deleted",HttpStatus.OK));

@@ -5,6 +5,7 @@ import com.cydeo.accountingsimplified.dto.CompanyDto;
 import com.cydeo.accountingsimplified.dto.UserDto;
 import com.cydeo.accountingsimplified.entity.Category;
 import com.cydeo.accountingsimplified.entity.Company;
+import com.cydeo.accountingsimplified.exception.AccountingException;
 import com.cydeo.accountingsimplified.mapper.MapperUtil;
 import com.cydeo.accountingsimplified.repository.CategoryRepository;
 import com.cydeo.accountingsimplified.service.ProductService;
@@ -37,7 +38,7 @@ class CategoryServiceImplTest {
     CategoryServiceImpl service;
 
     @Test
-    void findCategoryById() {
+    void findCategoryById() throws AccountingException {
         when(repository.findById(anyLong())).thenReturn(Optional.of(new Category()));
         when(mapperUtil.convert(any(Category.class), any(CategoryDto.class))).thenReturn(new CategoryDto());
         service.findCategoryById(anyLong());

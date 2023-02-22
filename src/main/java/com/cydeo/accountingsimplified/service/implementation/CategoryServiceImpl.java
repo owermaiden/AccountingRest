@@ -30,8 +30,9 @@ public class CategoryServiceImpl extends CommonService implements CategoryServic
     }
 
     @Override
-    public CategoryDto findCategoryById(Long categoryId) {
-        CategoryDto dto = mapperUtil.convert(categoryRepository.findById(categoryId).get(), new CategoryDto());
+    public CategoryDto findCategoryById(Long categoryId) throws AccountingException {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new AccountingException("Category not found"));
+        CategoryDto dto = mapperUtil.convert(category, new CategoryDto());
         dto.setHasProduct(hasProduct(dto.getId()));
         return dto;
     }
@@ -55,19 +56,18 @@ public class CategoryServiceImpl extends CommonService implements CategoryServic
     }
 
     @Override
-    public CategoryDto update(Long categoryId, CategoryDto categoryDto) {
-        Category category = categoryRepository.findById(categoryId).get();
+    public CategoryDto update(Long categoryId, CategoryDto categoryDto) throws AccountingException {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new AccountingException("Category not found"));
         category.setDescription(categoryDto.getDescription());
         return mapperUtil.convert(categoryRepository.save(category), new CategoryDto());
     }
 
-    @SneakyThrows
     @Override
-    public void delete(Long categoryId) {
+    public void delete(Long categoryId) throws AccountingException {
         if(hasProduct(categoryId)){
-            throw new AccountingException("There is/are products with this Category");
+            throw new AccountingException("This category can not be deleted...");
         }
-        Category category = categoryRepository.findById(categoryId).get();
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new AccountingException("Category not found"));
         category.setIsDeleted(true);
         category.setDescription(category.getDescription() + "-" + category.getId());
         categoryRepository.save(category);

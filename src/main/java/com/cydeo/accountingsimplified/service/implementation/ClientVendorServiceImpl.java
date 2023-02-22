@@ -3,6 +3,7 @@ package com.cydeo.accountingsimplified.service.implementation;
 import com.cydeo.accountingsimplified.dto.ClientVendorDto;
 import com.cydeo.accountingsimplified.entity.ClientVendor;
 import com.cydeo.accountingsimplified.enums.ClientVendorType;
+import com.cydeo.accountingsimplified.exception.AccountingException;
 import com.cydeo.accountingsimplified.mapper.MapperUtil;
 import com.cydeo.accountingsimplified.repository.ClientVendorRepository;
 import com.cydeo.accountingsimplified.service.ClientVendorService;
@@ -25,8 +26,11 @@ public class ClientVendorServiceImpl extends CommonService implements ClientVend
     }
 
     @Override
-    public ClientVendorDto findClientVendorById(Long id) {
+    public ClientVendorDto findClientVendorById(Long id) throws AccountingException {
         ClientVendor clientVendor = clientVendorRepository.findClientVendorById(id);
+        if (clientVendor == null){
+            throw new AccountingException("Client/Vendor not found");
+        }
         return mapperUtil.convert(clientVendor, new ClientVendorDto());
     }
 
@@ -57,8 +61,8 @@ public class ClientVendorServiceImpl extends CommonService implements ClientVend
     }
 
     @Override
-    public ClientVendorDto update(Long clientVendorId, ClientVendorDto clientVendorDto) throws ClassNotFoundException, CloneNotSupportedException {
-        ClientVendor savedClientVendor = clientVendorRepository.findById(clientVendorId).get();
+    public ClientVendorDto update(Long clientVendorId, ClientVendorDto clientVendorDto) throws ClassNotFoundException, CloneNotSupportedException, AccountingException {
+        ClientVendor savedClientVendor = clientVendorRepository.findById(clientVendorId).orElseThrow(() -> new AccountingException("Client/Vendor not found") );
         clientVendorDto.getAddress().setId(savedClientVendor.getAddress().getId());     // otherwise it creates new address instead of updating existing one
         clientVendorDto.setCompany(securityService.getLoggedInUser().getCompany());
         ClientVendor updatedClientVendor = mapperUtil.convert(clientVendorDto, new ClientVendor());
@@ -66,8 +70,11 @@ public class ClientVendorServiceImpl extends CommonService implements ClientVend
     }
 
     @Override
-    public void delete(Long clientVendorId) {
+    public void delete(Long clientVendorId) throws AccountingException {
         ClientVendor clientVendor = clientVendorRepository.findClientVendorById(clientVendorId);
+        if (clientVendor == null){
+            throw new AccountingException("Client/Vendor not found");
+        }
         clientVendor.setIsDeleted(true);
         clientVendor.setClientVendorName(clientVendor.getClientVendorName() + "-" + clientVendor.getId());
         clientVendorRepository.save(clientVendor);
@@ -76,7 +83,9 @@ public class ClientVendorServiceImpl extends CommonService implements ClientVend
     @Override
     public boolean companyNameExists(ClientVendorDto clientVendorDto) {
         ClientVendor existingClientVendor = clientVendorRepository.findByClientVendorNameAndCompany(clientVendorDto.getClientVendorName(), getCompany());
-        if (existingClientVendor == null) return false;
+        if (existingClientVendor == null) {
+            return false;
+        }
         return !existingClientVendor.getId().equals(clientVendorDto.getId());
     }
 
