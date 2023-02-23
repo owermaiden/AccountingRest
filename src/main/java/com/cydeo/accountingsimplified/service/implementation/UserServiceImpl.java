@@ -3,6 +3,7 @@ package com.cydeo.accountingsimplified.service.implementation;
 import com.cydeo.accountingsimplified.dto.UserDto;
 import com.cydeo.accountingsimplified.entity.Company;
 import com.cydeo.accountingsimplified.entity.User;
+import com.cydeo.accountingsimplified.exception.AccountingException;
 import com.cydeo.accountingsimplified.exception.UserDoesNotExistException;
 import com.cydeo.accountingsimplified.mapper.MapperUtil;
 import com.cydeo.accountingsimplified.repository.UserRepository;
@@ -34,10 +35,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findUserById(Long id) {
+    public UserDto findUserById(Long id) throws AccountingException {
         User user = userRepository.findUserById(id);
         if (user == null){
-            throw new NoSuchElementException("There is no user with given id");
+            throw new AccountingException("There is no user with given id");
         }
         UserDto dto = mapperUtil.convert(user, new UserDto());
         dto.setIsOnlyAdmin(checkIfOnlyAdminForCompany(dto));
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findByUsername(String username) {
+    public UserDto findByUsername(String username){
         User user = userRepository.findByUsername(username);
         return mapperUtil.convert(user, new UserDto());
     }
@@ -86,21 +87,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long userId) throws UserDoesNotExistException {
         User user = userRepository.findUserById(userId);
-        user.setUsername(user.getUsername() + "-" + user.getId());  // without this modification, if entity has column(unique=true)
-                                                                    // and we want to save a user with same email, it throws exception.
+        user.setUsername(user.getUsername() + "-" + user.getId());
         user.setIsDeleted(true);
         userRepository.save(user);
     }
 
     @Override
-    public Boolean emailExist(UserDto userDto) {
+    public Boolean emailExist(UserDto userDto) throws AccountingException {
         User userWithUpdatedEmail = userRepository.findByUsername(userDto.getUsername());
-        if (userWithUpdatedEmail == null) return false;
         return !userWithUpdatedEmail.getId().equals(userDto.getId());
     }
 
 
     private Boolean checkIfOnlyAdminForCompany(UserDto dto) {
+        if (!dto.getRole().getDescription().equals("Admin")){
+            return false;
+        }
         return userRepository.countAllByCompanyAndRole_Description(mapperUtil.convert(dto.getCompany(), new Company()), "Admin") == 1;
     }
 

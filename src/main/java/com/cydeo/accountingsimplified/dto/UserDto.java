@@ -25,7 +25,6 @@ public class UserDto {
     private String phone;
     private RoleDto role;
     private CompanyDto company;
-    @JsonIgnore
     private Boolean isOnlyAdmin;
 
 

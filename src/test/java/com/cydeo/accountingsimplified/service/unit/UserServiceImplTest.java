@@ -4,6 +4,7 @@ import com.cydeo.accountingsimplified.TestDocumentInitializer;
 import com.cydeo.accountingsimplified.dto.UserDto;
 import com.cydeo.accountingsimplified.entity.Company;
 import com.cydeo.accountingsimplified.entity.User;
+import com.cydeo.accountingsimplified.exception.AccountingException;
 import com.cydeo.accountingsimplified.mapper.MapperUtil;
 import com.cydeo.accountingsimplified.repository.UserRepository;
 import com.cydeo.accountingsimplified.service.SecurityService;
@@ -42,7 +43,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("When_find_by_id_then_success")
-    public void GIVEN_ID_WHEN_FIND_BY_ID_THEN_SUCCESS(){
+    public void GIVEN_ID_WHEN_FIND_BY_ID_THEN_SUCCESS() throws AccountingException {
         // Given
         UserDto userDto = TestDocumentInitializer.getUser("Admin");
         User user = mapperUtil.convert(userDto, new User());
@@ -55,7 +56,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("Given_only_admin_When_find_by_id_then_success")
-    public void GIVEN_ONLY_ADMIN_ID_WHEN_FIND_BY_ID_THEN_SUCCESS(){
+    public void GIVEN_ONLY_ADMIN_ID_WHEN_FIND_BY_ID_THEN_SUCCESS() throws AccountingException {
         // Given
         UserDto userDto = TestDocumentInitializer.getUser("Admin");
         User user = mapperUtil.convert(userDto, new User());
@@ -84,7 +85,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("When_find_by_user_name_then_success")
-    public void GIVEN_USERNAME_WHEN_FIND_BY_USERNAME_THEN_SUCCESS(){
+    public void GIVEN_USERNAME_WHEN_FIND_BY_USERNAME_THEN_SUCCESS() throws AccountingException {
         // Given
         UserDto userDto = TestDocumentInitializer.getUser("Admin");
         User user = mapperUtil.convert(userDto, new User());
@@ -98,7 +99,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("When_get_filtered_users_then_success")
-    public void GIVEN_ROOT_USER_WHEN_GET_FILTERED_USERS_THEN_SUCCESS(){
+    public void GIVEN_ROOT_USER_WHEN_GET_FILTERED_USERS_THEN_SUCCESS() throws AccountingException {
         // Given
         UserDto adminUserDto = TestDocumentInitializer.getUser("Admin");
         User adminUser = mapperUtil.convert(adminUserDto, new User());
