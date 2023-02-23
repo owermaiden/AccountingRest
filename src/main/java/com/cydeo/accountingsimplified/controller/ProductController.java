@@ -3,6 +3,7 @@ package com.cydeo.accountingsimplified.controller;
 import com.cydeo.accountingsimplified.dto.ProductDto;
 import com.cydeo.accountingsimplified.dto.ResponseWrapper;
 import com.cydeo.accountingsimplified.enums.ProductUnit;
+import com.cydeo.accountingsimplified.exception.AccountingException;
 import com.cydeo.accountingsimplified.service.CategoryService;
 import com.cydeo.accountingsimplified.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -41,29 +42,29 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWrapper> createProduct(@RequestBody ProductDto productDto) throws Exception {
+    public ResponseEntity<ResponseWrapper> createProduct(@RequestBody ProductDto productDto) throws AccountingException {
 
         if (productService.isProductNameExist(productDto)) {
-            throw new Exception("This Product Name already exists.");
+            throw new AccountingException("This Product Name already exists.");
         }
         ProductDto product = productService.save(productDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper("Product successfully created",product, HttpStatus.CREATED));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseWrapper> update(@RequestBody ProductDto productDto, @PathVariable("id") Long id) throws Exception {
+    public ResponseEntity<ResponseWrapper> update(@RequestBody ProductDto productDto, @PathVariable("id") Long id) throws AccountingException {
         productDto.setId(id);
         if (productService.isProductNameExist(productDto)) {
-            throw new Exception("This Product Name already exists.");
+            throw new AccountingException("This Product Name already exists.");
         }
         ProductDto product = productService.update(id, productDto);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper("Product successfully updated",product, HttpStatus.OK));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseWrapper> delete(@PathVariable("id") Long id) throws Exception {
+    public ResponseEntity<ResponseWrapper> delete(@PathVariable("id") Long id) throws AccountingException {
         if (productService.checkProductQuantity(id))  {
-            throw new Exception("This product can not be deleted, You have Invoice/s with that product...");
+            throw new AccountingException("This product can not be deleted, You have Invoice/s with that product...");
         }
         productService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper("Product successfully deleted",HttpStatus.OK));
