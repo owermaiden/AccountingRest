@@ -64,8 +64,11 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseWrapper> delete(@PathVariable("id") Long id) throws AccountingException {
+        // TODO check if product exist..
         categoryService.delete(id);
         return ResponseEntity.ok(new ResponseWrapper("Category successfully deleted",HttpStatus.OK));
     }
+
+    // 12:10 PM
 
 }
