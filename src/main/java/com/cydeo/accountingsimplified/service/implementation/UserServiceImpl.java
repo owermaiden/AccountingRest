@@ -67,7 +67,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto save(UserDto userDto) {
+    public UserDto save(UserDto userDto) throws AccountingException {
+        this.emailExist(userDto);
         User user = mapperUtil.convert(userDto, new User());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEnabled(true);
@@ -76,7 +77,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(UserDto userDto) {
+    public UserDto update(UserDto userDto) throws AccountingException {
+        this.emailExist(userDto);
         User updatedUser = mapperUtil.convert(userDto, new User());
         updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         updatedUser.setEnabled(userRepository.findUserById(userDto.getId()).isEnabled());
@@ -95,7 +97,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean emailExist(UserDto userDto) throws AccountingException {
         User userWithUpdatedEmail = userRepository.findByUsername(userDto.getUsername());
-        return !userWithUpdatedEmail.getId().equals(userDto.getId());
+        if (userWithUpdatedEmail != null){
+            throw new AccountingException("Already exist");
+        }
+        return false;
     }
 
 
