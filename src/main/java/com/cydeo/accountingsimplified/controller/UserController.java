@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @CrossOrigin
@@ -23,6 +24,7 @@ public class UserController {
     }
 
     @GetMapping
+    @RolesAllowed({"ADMIN","USER"})
     @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
     public ResponseEntity<ResponseWrapper> getUsers() throws Exception {
         List<UserDto> users = userService.getFilteredUsers();
@@ -38,10 +40,7 @@ public class UserController {
     @PostMapping
     @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
     public ResponseEntity<ResponseWrapper> create(@RequestBody UserDto userDto) throws AccountingException {
-        boolean emailExist = userService.emailExist(userDto);
-        if (emailExist){
-            throw new AccountingException("A user with this email already exists.");
-        }
+
         UserDto user = userService.save(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper("User successfully created",user, HttpStatus.CREATED));
     }
@@ -49,10 +48,6 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseWrapper> update(@PathVariable("id") Long id, @RequestBody UserDto userDto) throws AccountingException {
         userDto.setId(id);  // spring cannot set id since it is not seen in UI and we need to check if updated email is used by different user.
-        boolean emailExist = userService.emailExist(userDto);
-        if (emailExist){
-            throw new AccountingException("A user with this email already exists");
-        }
         UserDto user = userService.update(userDto);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseWrapper("User successfully created",user, HttpStatus.OK));
     }
