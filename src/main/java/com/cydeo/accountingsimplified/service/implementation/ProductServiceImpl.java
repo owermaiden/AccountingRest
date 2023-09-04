@@ -38,13 +38,14 @@ public class ProductServiceImpl extends CommonService implements ProductService 
     }
 
     @Override
-    @Cacheable(value = "products")
+    @Cacheable("products")
     public List<ProductDto> getAllProducts() {
         return productRepository.findAllByCategoryCompany(getCompany())
                 .stream()
                 .sorted(Comparator.comparing((Product product) -> product.getCategory().getDescription())
                 .thenComparing(Product::getName))
                 .map(each -> mapperUtil.convert(each, new ProductDto()))
+                .peek(System.out::println)
                 .collect(Collectors.toList());
     }
 

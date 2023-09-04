@@ -10,7 +10,7 @@ public class HazelcatsConfig {
     @Bean
     public Config hazelCastConfig(){
         Config config = new Config();
-        config.getJetConfig().setEnabled(true);
+         config.getJetConfig().setEnabled(true);
         config.setInstanceName("hazelcast-instance");
         config.addMapConfig(mapConfig());
 
@@ -20,6 +20,12 @@ public class HazelcatsConfig {
                         .setMaxSizePolicy(MaxSizePolicy.PER_NODE)
                         .setSize(1000)
                         .setEvictionPolicy(EvictionPolicy.LRU))
+        );
+
+        config.addMapConfig(new MapConfig()
+                .setName("categories")
+                .setTimeToLiveSeconds(300)
+                .setMaxIdleSeconds(400)
         );
 
         return config;
