@@ -9,6 +9,8 @@ import com.cydeo.accountingsimplified.service.InvoiceProductService;
 import com.cydeo.accountingsimplified.service.ProductService;
 import com.cydeo.accountingsimplified.service.SecurityService;
 import com.cydeo.accountingsimplified.service.common.CommonService;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@CacheConfig(cacheNames = "products")
 public class ProductServiceImpl extends CommonService implements ProductService {
     private final ProductRepository productRepository;
     private final InvoiceProductService invoiceProductService;
@@ -35,6 +38,7 @@ public class ProductServiceImpl extends CommonService implements ProductService 
     }
 
     @Override
+    @Cacheable(value = "products")
     public List<ProductDto> getAllProducts() {
         return productRepository.findAllByCategoryCompany(getCompany())
                 .stream()

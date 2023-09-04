@@ -10,6 +10,7 @@ import com.cydeo.accountingsimplified.repository.UserRepository;
 import com.cydeo.accountingsimplified.service.SecurityService;
 import com.cydeo.accountingsimplified.service.UserService;
 import com.cydeo.accountingsimplified.service.common.CommonService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "users")
     public List<UserDto> getFilteredUsers() {
         List<User> userList;
         if (securityService.getLoggedInUser().getRole().getDescription().equals("Root User")) {
