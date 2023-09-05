@@ -10,7 +10,9 @@ public class HazelcatsConfig {
     @Bean
     public Config hazelCastConfig(){
         Config config = new Config();
-         config.getJetConfig().setEnabled(true);
+        config.getJetConfig().setEnabled(true);
+        config.getNetworkConfig().setPortAutoIncrement(true);
+        config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(true);
         config.setInstanceName("hazelcast-instance");
         config.addMapConfig(mapConfig());
 
