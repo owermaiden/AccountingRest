@@ -119,7 +119,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("Given UserDto when save then success")
-    public void GIVEN_USER_DTO_WHEN_SAVE_THEN_SUCCESS(){
+    public void GIVEN_USER_DTO_WHEN_SAVE_THEN_SUCCESS() throws AccountingException {
         // Given
         String testPassword = "$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK";
         UserDto userDto = TestDocumentInitializer.getUser("Admin");
@@ -133,7 +133,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("Given UserDto when update then success")
-    public void GIVEN_USER_DTO_WHEN_UPDATE_THEN_SUCCESS(){
+    public void GIVEN_USER_DTO_WHEN_UPDATE_THEN_SUCCESS() throws AccountingException {
         // Given
         // String testPassword = "$2a$10$nAB5j9G1c3JHgg7qzhiIXO7cqqr5oJ3LXRNQJKssDUwHXzDGUztNK";
         UserDto userDto = TestDocumentInitializer.getUser("Admin");

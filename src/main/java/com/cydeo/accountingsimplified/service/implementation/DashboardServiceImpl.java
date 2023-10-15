@@ -9,6 +9,7 @@ import com.cydeo.accountingsimplified.enums.InvoiceType;
 import com.cydeo.accountingsimplified.service.*;
 import com.cydeo.accountingsimplified.service.feignClients.CurrencyExchangeClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -51,6 +52,7 @@ public class DashboardServiceImpl implements DashboardService {
 
 
     @Override
+    @Scheduled(cron = "0 0 1 * * ?")  // will gonna run this code only project is up and running...
     public CurrencyDto getExchangeRates() {
         CurrencyApiResponse currency = client.getUsdBasedCurrencies();
         CurrencyDto currencyDto= CurrencyDto.builder()

@@ -6,10 +6,7 @@ import com.cydeo.accountingsimplified.enums.ProductUnit;
 import com.cydeo.accountingsimplified.exception.AccountingException;
 import com.cydeo.accountingsimplified.service.CategoryService;
 import com.cydeo.accountingsimplified.service.ProductService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,7 +21,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
-@Api(value = "Swagger2DemoRestController", description = "REST APIs related to Student Entity!!!!")
 public class ProductController {
 
     private final ProductService productService;

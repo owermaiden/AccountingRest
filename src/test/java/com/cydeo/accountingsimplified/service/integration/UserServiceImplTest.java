@@ -3,6 +3,7 @@ package com.cydeo.accountingsimplified.service.integration;
 import com.cydeo.accountingsimplified.TestDocumentInitializer;
 import com.cydeo.accountingsimplified.dto.UserDto;
 import com.cydeo.accountingsimplified.entity.User;
+import com.cydeo.accountingsimplified.exception.AccountingException;
 import com.cydeo.accountingsimplified.mapper.MapperUtil;
 import com.cydeo.accountingsimplified.repository.UserRepository;
 import com.cydeo.accountingsimplified.service.SecurityService;
@@ -52,7 +53,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("When_find_by_id_then_success")
-    public void GIVEN_ID_WHEN_FIND_BY_ID_THEN_SUCCESS() {
+    public void GIVEN_ID_WHEN_FIND_BY_ID_THEN_SUCCESS() throws AccountingException {
         // When
         var returnedUser = userService.findUserById(user.getId());
         // Then
@@ -84,7 +85,7 @@ class UserServiceImplTest {
     @Test
 //    @WithAnonymousUser
     @DisplayName("When create new User then success")
-    public void GIVEN_USER_DTO_WHEN_SAVE_THEN_SUCCESS(){
+    public void GIVEN_USER_DTO_WHEN_SAVE_THEN_SUCCESS() throws AccountingException {
         // Given
         int beforeSize = repository.findAll().size();
         // When
